@@ -5,6 +5,19 @@ import HTTPSClient
 public typealias NetworkRequestCompletionHandler = (error:HttpError?, data:NSData?, status:Int?, headers: [String:String]?) -> Void
 internal let NOOPNetworkRequestCompletionHandler:NetworkRequestCompletionHandler = {(a,b,c,d)->Void in}
 
+public struct HttpResponse{
+	var error: HttpError?
+	var data: NSData?
+	var status: Int?
+	var headers: [String:String]?
+	public init(error: HttpError? = nil, data: NSData? = nil, status: Int? = nil, headers: [String:String]? = nil){
+		self.error = error
+		self.data = data
+		self.status = status
+		self.headers = headers
+	}
+}
+
 ///	Used to indicate various failure types that might occur during HTTPS operations
 public enum HttpError: Int, ErrorProtocol{
 	/**
@@ -35,28 +48,28 @@ public class HTTPSClient{
 	public static let logger = Logger(forName: "BluemixHTTPSClient")
 
 	/// Send a GET request
-	public class func get(url:String, headers:[String:String]? = nil, completionHandler:NetworkRequestCompletionHandler = NOOPNetworkRequestCompletionHandler){
-		HTTPSClient.sendRequest(url: url, method: .get , headers: headers, completionHandler: completionHandler)
+	public class func get(url:String, headers:[String:String]? = nil) -> HttpResponse{
+		return HTTPSClient.sendRequest(url: url, method: .get , headers: headers)
 	}
 
 	/// Send a PUT request
-	public class func put(url:String, headers:[String:String]? = nil, data:NSData? = nil, completionHandler:NetworkRequestCompletionHandler = NOOPNetworkRequestCompletionHandler){
-		HTTPSClient.sendRequest(url: url, method: .put , headers: headers, data: data, completionHandler: completionHandler)
+	public class func put(url:String, headers:[String:String]? = nil, data:NSData? = nil) -> HttpResponse{
+		return HTTPSClient.sendRequest(url: url, method: .put , headers: headers, data: data)
 	}
 
 	/// Send a DELETE request
-	public class func delete(url:String, headers:[String:String]? = nil, completionHandler:NetworkRequestCompletionHandler = NOOPNetworkRequestCompletionHandler){
-		HTTPSClient.sendRequest(url: url, method: .delete , headers: headers, completionHandler: completionHandler)
+	public class func delete(url:String, headers:[String:String]? = nil) -> HttpResponse{
+		return HTTPSClient.sendRequest(url: url, method: .delete , headers: headers)
 	}
 
 	/// Send a POST request
-	public class func post(url:String, headers:[String:String]? = nil, data:NSData? = nil, completionHandler:NetworkRequestCompletionHandler = NOOPNetworkRequestCompletionHandler){
-		HTTPSClient.sendRequest(url: url, method: .post , headers: headers, data: data, completionHandler: completionHandler)
+	public class func post(url:String, headers:[String:String]? = nil, data:NSData? = nil) -> HttpResponse{
+		return HTTPSClient.sendRequest(url: url, method: .post , headers: headers, data: data)
 	}
 
 	/// Send a HEAD request
-	public class func head(url:String, headers:[String:String]? = nil, completionHandler:NetworkRequestCompletionHandler = NOOPNetworkRequestCompletionHandler){
-		HTTPSClient.sendRequest(url: url, method: .head , headers: headers, completionHandler: completionHandler)
+	public class func head(url:String, headers:[String:String]? = nil) -> HttpResponse{
+		return HTTPSClient.sendRequest(url: url, method: .head , headers: headers)
 	}
 }
 
@@ -71,11 +84,11 @@ extension HTTPSClient{
 	- Parameter data: The data to send in request body
 	- Parameter completionHandler: NetworkRequestCompletionHandler instance
 	*/
-	private class func sendRequest(url:String, method:S4.Method, headers:[String:String]? = nil, data: NSData? = nil, completionHandler:NetworkRequestCompletionHandler){
+	private class func sendRequest(url:String, method:S4.Method, headers:[String:String]? = nil, data: NSData? = nil) -> HttpResponse{
 		var requestUri = try? URI(url)
 
 		guard requestUri != nil else {
-			return completionHandler(error: HttpError.InvalidUri, data: nil, status: nil, headers: nil)
+			return HttpResponse(error: HttpError.InvalidUri, data: nil, status: nil, headers: nil)
 		}
 
 		if requestUri!.port == nil{
@@ -84,7 +97,7 @@ extension HTTPSClient{
 
 		let client = try? Client(uri:requestUri!)
 		guard client != nil else {
-			return completionHandler(error: HttpError.InvalidUri, data: nil, status: nil, headers: nil)
+			return HttpResponse(error: HttpError.InvalidUri, data: nil, status: nil, headers: nil)
 		}
 
 		var s4headers = S4.Headers()
@@ -123,29 +136,24 @@ extension HTTPSClient{
 				logger.error(String(HttpError.Unauthorized))
 				let responseBodyString = String(data:responseBodyData, encoding: NSUTF8StringEncoding)
 				logger.debug(responseBodyString!)
-				completionHandler(error: HttpError.Unauthorized, data: data, status: statusCode, headers: convertHeaders(s4headers: s4headers))
-				break
+				return HttpResponse(error: HttpError.Unauthorized, data: data, status: statusCode, headers: convertHeaders(s4headers: s4headers))
 			case 404:
 				logger.error(String(HttpError.NotFound))
 				let responseBodyString = String(data:responseBodyData, encoding: NSUTF8StringEncoding)
 				logger.debug(responseBodyString!)
-				completionHandler(error: HttpError.NotFound, data: data, status: statusCode, headers: convertHeaders(s4headers: s4headers))
-				break
+				return HttpResponse(error: HttpError.NotFound, data: data, status: statusCode, headers: convertHeaders(s4headers: s4headers))
 			case 400 ... 599:
 				logger.error(String(HttpError.ServerError))
 				let responseBodyString = String(data:responseBodyData, encoding: NSUTF8StringEncoding)
 				logger.debug(responseBodyString!)
-				completionHandler(error: HttpError.ServerError, data: data, status: statusCode, headers: convertHeaders(s4headers: s4headers))
-				break
+				return HttpResponse(error: HttpError.ServerError, data: data, status: statusCode, headers: convertHeaders(s4headers: s4headers))
 			default:
-				completionHandler(error: nil, data: responseBodyData, status: statusCode, headers: convertHeaders(s4headers: s4headers))
-				break
+				return HttpResponse(error: nil, data: responseBodyData, status: statusCode, headers: convertHeaders(s4headers: s4headers))
 			}
 
 			// var bodyString = String(bytes: bodyByteArray!, encoding: NSUTF8StringEncoding)
-
 		} else {
-			completionHandler(error: HttpError.InvalidRequest, data: nil, status: nil, headers: nil)
+			return HttpResponse(error: HttpError.InvalidRequest, data: nil, status: nil, headers: nil)
 		}
 	}
 
