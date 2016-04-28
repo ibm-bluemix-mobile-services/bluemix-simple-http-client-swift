@@ -48,6 +48,7 @@ Alternatively you can specify these folders when using `swift build` via -Xcc an
 ```bash
 brew install openssl
 brew link --force openssl
+swift build -Xcc -I/usr/local/include -Xlinker -L/usr/local/lib
 swift build -Xcc -I/usr/local/include -Xlinker -L/usr/local/lib -X
 export LD_LIBRARY_PATH=$(pwd)/.build/debug
 ```
