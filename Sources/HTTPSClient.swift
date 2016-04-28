@@ -40,7 +40,7 @@ public class HTTPSClient{
 	}
 
 	/// Send a PUT request
-	public class func put(url:String, headers:[String:String]? = nil, data:NSData?, completionHandler:NetworkRequestCompletionHandler = NOOPNetworkRequestCompletionHandler){
+	public class func put(url:String, headers:[String:String]? = nil, data:NSData? = nil, completionHandler:NetworkRequestCompletionHandler = NOOPNetworkRequestCompletionHandler){
 		HTTPSClient.sendRequest(url: url, method: .put , headers: headers, data: data, completionHandler: completionHandler)
 	}
 
@@ -50,7 +50,7 @@ public class HTTPSClient{
 	}
 
 	/// Send a POST request
-	public class func post(url:String, headers:[String:String]? = nil, data:NSData?, completionHandler:NetworkRequestCompletionHandler = NOOPNetworkRequestCompletionHandler){
+	public class func post(url:String, headers:[String:String]? = nil, data:NSData? = nil, completionHandler:NetworkRequestCompletionHandler = NOOPNetworkRequestCompletionHandler){
 		HTTPSClient.sendRequest(url: url, method: .post , headers: headers, data: data, completionHandler: completionHandler)
 	}
 
