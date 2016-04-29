@@ -207,7 +207,7 @@ public class HttpUtils{
 		return headers;
 	}
 	
-	static func contentType(from fileName:String, otherwise:String = "text/plain") -> String{
+	public static func contentType(fromFilename fileName:String, otherwise:String = "text/plain") -> String{
 		if fileName.ends(with: ".txt"){
 			return "text/plain"
 		} else if fileName.ends(with: ".jpg"){
