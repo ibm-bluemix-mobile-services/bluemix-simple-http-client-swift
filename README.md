@@ -1,4 +1,4 @@
-#BluemixHTTPSClient
+#SimpleHttpClient
 
 [![Swift][swift-badge]][swift-url]
 [![Platform][platform-badge]][platform-url]
@@ -18,12 +18,12 @@ let package = Package(
     ]
 )
 
-BluemixHTTPSClient was tested on OSX and Linux with DEVELOPMENT-SNAPSHOT-2016-04-25-a
+SimpleHttpClient was tested on OSX and Linux with DEVELOPMENT-SNAPSHOT-2016-04-25-a
 
 ```
 ## Setup
 
-The BluemixHTTPSClient is a simple abstraction layer on top of https://github.com/VeniceX/HTTPSClient.git, which uses several C libraries. There's a basic one time setup you'll need to perform in order to get these C libraries on your machine.
+The SimpleHttpClient is a simple abstraction layer on top of https://github.com/VeniceX/HTTPSClient.git, which uses several C libraries. There's a basic one time setup you'll need to perform in order to get these C libraries on your machine.
 
 #### Build on Linux
 

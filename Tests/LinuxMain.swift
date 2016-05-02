@@ -1,6 +1,6 @@
 import XCTest
-@testable import bluemix-httpclient-swiftTestSuite
+@testable import SimpleHttpClientTestSuite
 
 XCTMain([
-	 testCase(bluemix-httpclient-swiftTests.allTests),
+	testCase(HttpClientTests.allTests)
 ])
