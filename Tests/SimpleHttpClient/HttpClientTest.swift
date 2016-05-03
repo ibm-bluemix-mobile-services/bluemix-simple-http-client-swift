@@ -25,7 +25,7 @@ class HttpClientTests: XCTestCase {
 		let res2 = res1.resourceByAddingPathComponent(pathComponent: "/component")
 		XCTAssertEqual(res2.path, "path/component", "path is invalid")
 	}
-
+	
 	func testGet(){
 		let resource = httpsResource.resourceByAddingPathComponent(pathComponent: "/get")
 		HttpClient.get(resource: resource) { error, status, headers, data in
