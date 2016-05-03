@@ -5,43 +5,56 @@ import Foundation
 class HttpClientTests: XCTestCase {
 	let httpResource = HttpResourse(schema: "http", host: "httpbin.org", port: "80")
 	let httpsResource = HttpResourse(schema: "https", host: "httpbin.org", port: "443")
-	#if os(Linux)
-		let data = "TestDataSimpleHttpClient".dataUsingEncoding(NSUTF8StringEncoding)
-	#else
-		let data = "TestDataSimpleHttpClient".data(using: NSUTF8StringEncoding)
-	#endif
-
+	let testString = "TestDataSimpleHttpClient"
+	var testData:NSData!
+	
+	override func setUp() {
+		#if os(Linux)
+			testData = testString.dataUsingEncoding(NSUTF8StringEncoding)
+		#else
+			testData = testString.data(using: NSUTF8StringEncoding)
+		#endif
+	}
 
 	func testHttpResourceInitializer(){
 		let resource = HttpResourse(schema: "schema", host: "host", port: "port", path: "path")
-		XCTAssertEqual(resource.host, "host", "host is invalid")
-		XCTAssertEqual(resource.schema, "schema", "schema is invalid")
-		XCTAssertEqual(resource.port, "port", "port is invalid")
-		XCTAssertEqual(resource.path, "path", "path is invalid")
+		XCTAssertEqual(resource.host, "host", "resource.host != host")
+		XCTAssertEqual(resource.schema, "schema", "resource.schema != schema")
+		XCTAssertEqual(resource.port, "port", "resource.port != port")
+		XCTAssertEqual(resource.path, "path", "resource.path != path")
 	}
 
 	func testHttpResourceByAddingPathComponent(){
-		let res1 = HttpResourse(schema: "schema", host: "host", port: "port", path: "path")
-		let res2 = res1.resourceByAddingPathComponent(pathComponent: "/component")
-		XCTAssertEqual(res2.path, "path/component", "path is invalid")
+		let resource = httpsResource.resourceByAddingPathComponent(pathComponent: "/component")
+		XCTAssertEqual(resource.schema, "https", "resource.schema != https")
+		XCTAssertEqual(resource.host, "httpbin.org", "resource.host != httpbin.org")
+		XCTAssertEqual(resource.port, "443", "resource.port != 443")
+		XCTAssertEqual(resource.path, "/component", "resource.path != /component")
+	}
+	
+	func testHttpResourceFullUri(){
+		let resource = httpsResource.resourceByAddingPathComponent(pathComponent: "/a?e=f&g=h")
+		XCTAssertEqual(resource.uri, "https://httpbin.org:443/a?e=f&g=h", "resource.uri != https://httpbin.org:443/a?e=f&g=h")
 	}
 	
 	func testGet(){
 		let resource = httpsResource.resourceByAddingPathComponent(pathComponent: "/get")
 		HttpClient.get(resource: resource) { error, status, headers, data in
-			XCTAssertTrue(status == 200, "Response status is not 200")
-			XCTAssertNotNil(headers, "Response headers are nil")
-			XCTAssertNotNil(data, "Response data is nil")
+			XCTAssertNil(error, "error != nil")
+			XCTAssertTrue(status == 200, "status != 200")
+			XCTAssertNotNil(headers, "headers == nil")
+			XCTAssertNotNil(data, "data == nil")
 		}
 	}
 
 	func testPost(){
 		let resource = httpsResource.resourceByAddingPathComponent(pathComponent: "/post")
 		let headers = ["Content-Type":"text/plain"]
-		HttpClient.post(resource: resource, headers: headers, data: data) { error, status, headers, data in
-			XCTAssertTrue(status == 200, "Response status is not 200")
-			XCTAssertNotNil(headers, "Response headers are nil")
-			XCTAssertNotNil(data, "Response data is nil")
+		HttpClient.post(resource: resource, headers: headers, data: testData) { error, status, headers, data in
+			XCTAssertNil(error, "error != nil")
+			XCTAssertTrue(status == 200, "status != 200")
+			XCTAssertNotNil(headers, "headers == nil")
+			XCTAssertNotNil(data, "data == nil")
 			let responseString = String(data: data!, encoding:NSUTF8StringEncoding)
 			#if os(Linux)
 				XCTAssertTrue(responseString!.containsString("TestDataSimpleHttpClient"))
@@ -52,20 +65,21 @@ class HttpClientTests: XCTestCase {
 	}
 
 	func testHead(){
-		//		let resource = httpsResource.resourceByAddingPathComponent(pathComponent: "/head")
-		//		HttpClient.head(resource: resource) { error, status, headers, data in
-		//			XCTAssertTrue(status == 200, "Response status is not 200")
-		//			XCTAssertNotNil(headers, "Response headers are nil")
-		//		}
+		HttpClient.head(resource: httpResource) { error, status, headers, data in
+			XCTAssertNil(error, "error != nil")
+			XCTAssertTrue(status == 200, "status != 200")
+			XCTAssertNotNil(headers, "headers == nil")
+		}
 	}
 
 	func testPut(){
 		let resource = httpsResource.resourceByAddingPathComponent(pathComponent: "/put")
 		let headers = ["Content-Type":"text/plain"]
-		HttpClient.put(resource: resource, headers: headers, data: data) { error, status, headers, data in
-			XCTAssertTrue(status == 200, "Response status is not 200")
-			XCTAssertNotNil(headers, "Response headers are nil")
-			XCTAssertNotNil(data, "Response data is nil")
+		HttpClient.put(resource: resource, headers: headers, data: testData) { error, status, headers, data in
+			XCTAssertNil(error, "error != nil")
+			XCTAssertTrue(status == 200, "status != 200")
+			XCTAssertNotNil(headers, "headers == nil")
+			XCTAssertNotNil(data, "data == nil")
 			let responseString = String(data: data!, encoding:NSUTF8StringEncoding)
 			#if os(Linux)
 				XCTAssertTrue(responseString!.containsString("TestDataSimpleHttpClient"))
@@ -79,22 +93,27 @@ class HttpClientTests: XCTestCase {
 		let resource = httpsResource.resourceByAddingPathComponent(pathComponent: "/delete")
 		let headers = ["Content-Type":"text/plain"]
 		HttpClient.delete(resource: resource, headers: headers) { error, status, headers, data in
-			XCTAssertTrue(status == 200, "Response status is not 200")
-			XCTAssertNotNil(headers, "Response headers are nil")
+			XCTAssertNil(error, "error != nil")
+			XCTAssertTrue(status == 200, "status != 200")
+			XCTAssertNotNil(headers, "headers == nil")
 		}
 	}
 
 	func testNotFound(){
 		let resource = httpsResource.resourceByAddingPathComponent(pathComponent: "/afasdfasdfasdf")
 		HttpClient.get(resource: resource) { error, status, headers, data in
-			XCTAssertTrue(status == 404, "Response status is not 404")
+			XCTAssertNotNil(error, "error == nil")
+			XCTAssertEqual(error?.rawValue, HttpError.NotFound.rawValue, "error.rawValue != HttpError.NotFound.rawValue")
+			XCTAssertTrue(status == 404, "status != 404")
 		}
 	}
 
 	func testUnauthorized(){
 		let resource = httpsResource.resourceByAddingPathComponent(pathComponent: "/basic-auth/user/passwd")
 		HttpClient.get(resource: resource) { error, status, headers, data in
-			XCTAssertTrue(status == 401, "Response status is not 401")
+			XCTAssertNotNil(error, "error == nil")
+			XCTAssertEqual(error?.rawValue, HttpError.Unauthorized.rawValue, "error.rawValue != HttpError.Unauthorized.rawValue")
+			XCTAssertTrue(status == 401, "status != 401")
 		}
 	}
 }

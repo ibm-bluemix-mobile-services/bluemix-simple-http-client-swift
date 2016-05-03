@@ -106,7 +106,9 @@ private extension HttpClient {
 				request.headers[name] = value
 			}
 		}
-
+		
+		logger.debug("Sending \(method) request to \(resource.uri)")
+			
 		if let data = data {
 			request.end(data)
 		} else {

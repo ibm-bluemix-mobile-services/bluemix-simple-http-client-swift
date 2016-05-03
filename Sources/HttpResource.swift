@@ -25,6 +25,12 @@ public struct HttpResourse{
 	
 	/// Resource path, e.g. /my/resource/id/123
 	let path:String
+	
+	var uri:String{
+		get{
+			return schema + "://" + host + ":" + port + path
+		}
+	}
 		
 	/**
 	Initialize the HttpResource by specifying all properties
@@ -48,7 +54,7 @@ public struct HttpResourse{
 	- Parameter pathComponent: components to add
 	*/
 	public func resourceByAddingPathComponent(pathComponent:String) -> HttpResourse {
-		return HttpResourse(schema: self.schema, host: self.host, port: self.host, path: self.path + pathComponent)
+		return HttpResourse(schema: self.schema, host: self.host, port: self.port, path: self.path + pathComponent)
 	}
 }
 
