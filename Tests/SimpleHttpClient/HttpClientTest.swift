@@ -9,11 +9,7 @@ class HttpClientTests: XCTestCase {
 	var testData:NSData!
 	
 	override func setUp() {
-		#if os(Linux)
-			testData = testString.dataUsingEncoding(NSUTF8StringEncoding)
-		#else
-			testData = testString.data(using: NSUTF8StringEncoding)
-		#endif
+		testData = testString.data(using: NSUTF8StringEncoding)
 	}
 
 	func testHttpResourceInitializer(){
@@ -56,11 +52,7 @@ class HttpClientTests: XCTestCase {
 			XCTAssertNotNil(headers, "headers == nil")
 			XCTAssertNotNil(data, "data == nil")
 			let responseString = String(data: data!, encoding:NSUTF8StringEncoding)
-			#if os(Linux)
-				XCTAssertTrue(responseString!.containsString("TestDataSimpleHttpClient"))
-			#else
-				XCTAssertTrue(responseString!.contains("TestDataSimpleHttpClient"))
-			#endif
+			XCTAssertTrue(responseString!.contains("TestDataSimpleHttpClient"))
 		}
 	}
 
@@ -81,11 +73,7 @@ class HttpClientTests: XCTestCase {
 			XCTAssertNotNil(headers, "headers == nil")
 			XCTAssertNotNil(data, "data == nil")
 			let responseString = String(data: data!, encoding:NSUTF8StringEncoding)
-			#if os(Linux)
-				XCTAssertTrue(responseString!.containsString("TestDataSimpleHttpClient"))
-			#else
-				XCTAssertTrue(responseString!.contains("TestDataSimpleHttpClient"))
-			#endif
+			XCTAssertTrue(responseString!.contains("TestDataSimpleHttpClient"))
 		}
 	}
 
