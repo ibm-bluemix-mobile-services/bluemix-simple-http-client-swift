@@ -24,7 +24,7 @@ let package = Package(
 
 ## Setup
 
-The SimpleHttpClient is a simple abstraction layer on top of https://github.com/IBM-Swift/Kitura-net
+The SimpleHttpClient is a simple abstraction layer on top of https://github.com/IBM-Swift/Kitura-net .
 
 #### Build on Linux
 
