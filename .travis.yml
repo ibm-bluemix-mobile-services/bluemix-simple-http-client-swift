@@ -4,7 +4,7 @@ os:
 language: generic
 env:
   global:
-  - SWIFT_VERSION=DEVELOPMENT-SNAPSHOT-2016-04-25-a
+  - SWIFT_VERSION=DEVELOPMENT-SNAPSHOT-2016-05-03-a
 sudo: required
 dist: trusty
 osx_image: xcode7.3
