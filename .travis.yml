@@ -1,0 +1,20 @@
+os:
+  - linux
+  - osx
+language: generic
+env:
+  global:
+  - SWIFT_VERSION=DEVELOPMENT-SNAPSHOT-2016-04-25-a
+sudo: required
+dist: trusty
+osx_image: xcode7.3
+install:
+  - eval "$(cat ./install-swiftenv.sh)"
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+      sudo apt-get install -y libcurl4-openssl-dev libblocksruntime-dev libkqueue-dev libpthread-workqueue-dev libbsd-dev;
+      git clone -b experimental/foundation https://github.com/apple/swift-corelibs-libdispatch.git;
+      cd swift-corelibs-libdispatch && git submodule init && git submodule update && sh ./autogen.sh && ./configure --with-swift-toolchain=/home/travis/.swiftenv/versions/$SWIFT_VERSION/usr --prefix=/home/travis/.swiftenv/versions/$SWIFT_VERSION/usr && make && make install;
+    fi
+script:
+  - swift build --fetch # clones all dependencies
+  - swift build -Xcc -fblocks -Xlinker -ldispatch -Xlinker -rpath -Xlinker $(pwd)/.build/debug/
