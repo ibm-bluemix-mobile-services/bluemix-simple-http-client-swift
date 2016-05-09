@@ -12,7 +12,7 @@
 */
 
 /// Used for specifying an Http Resource that the request will be made to
-public struct HttpResourse{
+public struct HttpResource{
 	
 	/// Request schema, should be either http or https
 	let schema:String
@@ -53,8 +53,8 @@ public struct HttpResourse{
 	
 	- Parameter pathComponent: components to add
 	*/
-	public func resourceByAddingPathComponent(pathComponent:String) -> HttpResourse {
-		return HttpResourse(schema: self.schema, host: self.host, port: self.port, path: self.path + pathComponent)
+	public func resourceByAddingPathComponent(pathComponent:String) -> HttpResource {
+		return HttpResource(schema: self.schema, host: self.host, port: self.port, path: self.path + pathComponent)
 	}
 }
 

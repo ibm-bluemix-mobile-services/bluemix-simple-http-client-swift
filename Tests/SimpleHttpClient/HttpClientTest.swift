@@ -3,8 +3,8 @@ import Foundation
 @testable import SimpleHttpClient
 
 class HttpClientTests: XCTestCase {
-	let httpResource = HttpResourse(schema: "http", host: "httpbin.org", port: "80")
-	let httpsResource = HttpResourse(schema: "https", host: "httpbin.org", port: "443")
+	let httpResource = HttpResource(schema: "http", host: "httpbin.org", port: "80")
+	let httpsResource = HttpResource(schema: "https", host: "httpbin.org", port: "443")
 	let testString = "TestDataSimpleHttpClient"
 	var testData:NSData!
 	
@@ -13,7 +13,7 @@ class HttpClientTests: XCTestCase {
 	}
 
 	func testHttpResourceInitializer(){
-		let resource = HttpResourse(schema: "schema", host: "host", port: "port", path: "path")
+		let resource = HttpResource(schema: "schema", host: "host", port: "port", path: "path")
 		XCTAssertEqual(resource.host, "host", "resource.host != host")
 		XCTAssertEqual(resource.schema, "schema", "resource.schema != schema")
 		XCTAssertEqual(resource.port, "port", "resource.port != port")
