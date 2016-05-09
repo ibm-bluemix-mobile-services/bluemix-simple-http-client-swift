@@ -96,8 +96,8 @@ private extension HttpClient {
 		requestOptions.append(.Schema(resource.schema + "://"))
 		requestOptions.append(.Hostname(resource.host))
 		requestOptions.append(.Path(resource.path))
-
-		let request = Http.request(requestOptions) { (response) in
+		
+		let request = HTTP.request(requestOptions) { (response) in
 			handleResponse(response: response, completionHandler: completionHandler)
 		}
 		
