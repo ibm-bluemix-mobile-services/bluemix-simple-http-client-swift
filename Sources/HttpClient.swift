@@ -92,10 +92,11 @@ private extension HttpClient {
 	private class func sendRequest(to resource: HttpResource, method:String, headers:[String:String]? = nil, data: NSData? = nil, completionHandler: NetworkRequestCompletionHandler = NOOPNetworkRequestCompletionHandler){
 		
 		var requestOptions = Array<ClientRequestOptions>()
-		requestOptions.append(.Method(method))
-		requestOptions.append(.Schema(resource.schema + "://"))
-		requestOptions.append(.Hostname(resource.host))
-		requestOptions.append(.Path(resource.path))
+		
+		requestOptions.append(.method(method))
+		requestOptions.append(.schema(resource.schema + "://"))
+		requestOptions.append(.hostname(resource.host))
+		requestOptions.append(.path(resource.path))
 		
 		let request = HTTP.request(requestOptions) { (response) in
 			handleResponse(response: response, completionHandler: completionHandler)
