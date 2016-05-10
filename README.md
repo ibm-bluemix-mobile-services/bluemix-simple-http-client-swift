@@ -46,7 +46,7 @@ TBD
 ## Usage
 
 ```swift
-let httpResource = HttpResourse(schema: "http", host: "httpbin.org", port: "80")
+let httpResource = HttpResource(schema: "http", host: "httpbin.org", port: "80")
 let headers = ["Content-Type":"application/json"];
 let data = NSData()
 
