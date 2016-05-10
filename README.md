@@ -2,6 +2,7 @@
 
 [![Swift][swift-badge]][swift-url]
 [![Platform][platform-badge]][platform-url]
+[![Build Status](https://travis-ci.org/ibm-bluemix-mobile-services/bluemix-simple-http-client-swift.svg?branch=master)](https://travis-ci.org/ibm-bluemix-mobile-services/bluemix-simple-http-client-swift)
 
 [swift-badge]: https://img.shields.io/badge/Swift-3.0-orange.svg
 [swift-url]: https://swift.org
