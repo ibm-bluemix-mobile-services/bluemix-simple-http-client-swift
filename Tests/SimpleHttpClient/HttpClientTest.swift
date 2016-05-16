@@ -9,6 +9,7 @@ class HttpClientTests: XCTestCase {
 	var testData:NSData!
 	
 	override func setUp() {
+		self.continueAfterFailure = false
 		testData = testString.data(using: NSUTF8StringEncoding)
 	}
 
@@ -104,7 +105,17 @@ class HttpClientTests: XCTestCase {
 			XCTAssertTrue(status == 401, "status != 401")
 		}
 	}
+	
+	func testResponseHeaders(){
+		let resource = httpsResource.resourceByAddingPathComponent(pathComponent: "/headers")
+		HttpClient.get(resource: resource) { error, status, headers, data in
+			XCTAssertNil(error, "error != nil")
+			XCTAssertNotNil(headers, "headers == nil")
+			XCTAssertNotNil(headers!["Content-Type"], "headers[Content-Type] == nil")
+		}
+	}
 }
+	
 extension HttpClientTests {
 	static var allTests : [(String, HttpClientTests -> () throws -> Void)] {
 		return [

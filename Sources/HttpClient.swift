@@ -122,9 +122,11 @@ private extension HttpClient {
 			
 			// Handle headers
 			var headers:[String:String] = [:]
+			
 			var iterator = response.headers.makeIterator()
+			
 			while let header = iterator.next(){
-				headers.updateValue(header.1, forKey: header.0)
+				headers.updateValue(header.value[0], forKey: header.key)
 			}
 			
 			// Handle response body
