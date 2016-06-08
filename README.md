@@ -47,17 +47,19 @@ TBD
 ## Usage
 
 ```swift
+import SimpleHttpClient
+
 let httpResource = HttpResource(schema: "http", host: "httpbin.org", port: "80")
 let headers = ["Content-Type":"application/json"];
 let data = NSData()
 
-let resource = httpsResource.resourceByAddingPathComponent(pathComponent: "/post")
-HttpClient.post(resource: resource, headers: headers, data: data) { error, status, headers, data in
-	if let error = error{
-		print("Failure")
-	else {
-		print("Success")
-	}
+let resource = httpResource.resourceByAddingPathComponent(pathComponent: "/post")
+HttpClient.post(resource: resource, headers: headers, data: data) { (error, status, headers, data) in
+    if error != nil {
+        print("Failure")
+    } else if let data = data {
+        print("Success", data.dynamicType)
+    }
 }
 ```
 
