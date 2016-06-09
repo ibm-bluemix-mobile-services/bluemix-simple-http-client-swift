@@ -21,7 +21,7 @@ public struct HttpResource{
 	let host:String
 	
 	/// Resource port, e.g. 80
-	let port:String
+	let port:String?
 	
 	/// Resource path, e.g. /my/resource/id/123
 	let path:String
