@@ -28,7 +28,10 @@ public struct HttpResource{
 	
 	var uri:String{
 		get{
-			return schema + "://" + host + ":" + port + path
+		        var value = scheme + "://" + host
+		        if let port = port { value += ":" + port }
+		        var value += path
+			return value
 		}
 	}
 		
@@ -41,7 +44,7 @@ public struct HttpResource{
 	- Parameter path: Resource path, e.g. /my/resource/id/123
 	*/
 	
-	public init(schema:String, host: String, port: String, path: String = "") {
+	public init(schema:String, host: String, port: String? = nil, path: String = "") {
 		self.schema = schema
 		self.host = host
 		self.port = port
