@@ -58,7 +58,7 @@ HttpClient.post(resource: resource, headers: headers, data: data) { (error, stat
     if error != nil {
         print("Failure")
     } else if let data = data {
-        print("Success", data.dynamicType)
+        print("Success")
     }
 }
 ```
