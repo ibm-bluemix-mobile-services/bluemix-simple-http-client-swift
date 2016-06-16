@@ -13,51 +13,50 @@
 
 /// Used for specifying an Http Resource that the request will be made to
 public struct HttpResource{
-	
+
 	/// Request schema, should be either http or https
 	let schema:String
-	
+
 	/// Resource host name, e.g. www.example.com
 	let host:String
-	
+
 	/// Resource port, e.g. 80
 	let port:String?
-	
+
 	/// Resource path, e.g. /my/resource/id/123
 	let path:String
-	
-	var uri:String{
-		get{
-		        var value = scheme + "://" + host
-		        if let port = port { value += ":" + port }
-		        var value += path
+
+	var uri:String {
+		get {
+			var value = schema + "://" + host
+			if let port = port { value += ":" + port }
+			value += path
 			return value
-		}
+	  }
 	}
-		
+
 	/**
 	Initialize the HttpResource by specifying all properties
-	
+
 	- Parameter schema: Request schema, should be either http or https
 	- Parameter host: Resource host name, e.g. www.example.com
 	- Parameter port: Resource port, e.g. 80
 	- Parameter path: Resource path, e.g. /my/resource/id/123
 	*/
-	
+
 	public init(schema:String, host: String, port: String? = nil, path: String = "") {
 		self.schema = schema
 		self.host = host
 		self.port = port
 		self.path = path
 	}
-	
+
 	/**
 	Create a new HttpResource by adding components to path
-	
+
 	- Parameter pathComponent: components to add
 	*/
 	public func resourceByAddingPathComponent(pathComponent:String) -> HttpResource {
 		return HttpResource(schema: self.schema, host: self.host, port: self.port, path: self.path + pathComponent)
 	}
 }
-
