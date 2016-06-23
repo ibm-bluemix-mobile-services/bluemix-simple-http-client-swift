@@ -91,7 +91,8 @@ private extension HttpClient {
 	*/
 	private class func sendRequest(to resource: HttpResource, method:String, headers:[String:String]? = nil, data: NSData? = nil, completionHandler: NetworkRequestCompletionHandler = NOOPNetworkRequestCompletionHandler){
 		
-		var requestOptions = Array<ClientRequestOptions>()
+		
+		var requestOptions = Array<ClientRequest.Options>()
 		
 		requestOptions.append(.method(method))
 		requestOptions.append(.schema(resource.schema + "://"))

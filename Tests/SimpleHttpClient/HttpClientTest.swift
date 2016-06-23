@@ -117,7 +117,7 @@ class HttpClientTests: XCTestCase {
 }
 	
 extension HttpClientTests {
-	static var allTests : [(String, HttpClientTests -> () throws -> Void)] {
+	static var allTests : [(String, (HttpClientTests) -> () throws -> Void)] {
 		return [
 		       	("testGet", testGet),
 		       	("testDelete", testDelete),
