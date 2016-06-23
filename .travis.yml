@@ -8,6 +8,7 @@ env:
 branches:
   only:
     - master
+    - development
 sudo: required
 dist: trusty
 osx_image: xcode7.3
