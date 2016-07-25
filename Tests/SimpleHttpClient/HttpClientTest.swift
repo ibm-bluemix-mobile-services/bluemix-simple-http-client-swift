@@ -7,10 +7,14 @@ class HttpClientTests: XCTestCase {
 	let httpsResource = HttpResource(schema: "https", host: "httpbin.org", port: "443")
 	let testString = "TestDataSimpleHttpClient"
 	var testData:NSData!
-	
+
 	override func setUp() {
 		self.continueAfterFailure = false
-		testData = testString.data(using: NSUTF8StringEncoding)
+		#if os(Linux)
+			testData = testString.data(using: NSUTF8StringEncoding)
+		#else
+			testData = testString.data(using: String.Encoding.utf8)
+		#endif
 	}
 
 	func testHttpResourceInitializer(){
@@ -28,12 +32,12 @@ class HttpClientTests: XCTestCase {
 		XCTAssertEqual(resource.port, "443", "resource.port != 443")
 		XCTAssertEqual(resource.path, "/component", "resource.path != /component")
 	}
-	
+
 	func testHttpResourceFullUri(){
 		let resource = httpsResource.resourceByAddingPathComponent(pathComponent: "/a?e=f&g=h")
 		XCTAssertEqual(resource.uri, "https://httpbin.org:443/a?e=f&g=h", "resource.uri != https://httpbin.org:443/a?e=f&g=h")
 	}
-	
+
 	func testGet(){
 		let resource = httpsResource.resourceByAddingPathComponent(pathComponent: "/get")
 		HttpClient.get(resource: resource) { error, status, headers, data in
@@ -52,8 +56,12 @@ class HttpClientTests: XCTestCase {
 			XCTAssertTrue(status == 200, "status != 200")
 			XCTAssertNotNil(headers, "headers == nil")
 			XCTAssertNotNil(data, "data == nil")
-			let responseString = String(data: data!, encoding:NSUTF8StringEncoding)
-			XCTAssertTrue(responseString!.contains("TestDataSimpleHttpClient"))
+			#if os(Linux)
+				let responseString = String(data: data!, encoding:NSUTF8StringEncoding)
+			#else
+				let responseString = String(data: data as! Data, encoding:String.Encoding.utf8)
+			#endif
+			XCTAssertTrue(responseString!.contains(self.testString))
 		}
 	}
 
@@ -73,8 +81,12 @@ class HttpClientTests: XCTestCase {
 			XCTAssertTrue(status == 200, "status != 200")
 			XCTAssertNotNil(headers, "headers == nil")
 			XCTAssertNotNil(data, "data == nil")
-			let responseString = String(data: data!, encoding:NSUTF8StringEncoding)
-			XCTAssertTrue(responseString!.contains("TestDataSimpleHttpClient"))
+			#if os(Linux)
+				let responseString = String(data: data!, encoding:NSUTF8StringEncoding)
+			#else
+				let responseString = String(data: data as! Data, encoding:String.Encoding.utf8)
+			#endif
+			XCTAssertTrue(responseString!.contains(self.testString))
 		}
 	}
 
@@ -105,7 +117,7 @@ class HttpClientTests: XCTestCase {
 			XCTAssertTrue(status == 401, "status != 401")
 		}
 	}
-	
+
 	func testResponseHeaders(){
 		let resource = httpsResource.resourceByAddingPathComponent(pathComponent: "/headers")
 		HttpClient.get(resource: resource) { error, status, headers, data in
@@ -115,19 +127,21 @@ class HttpClientTests: XCTestCase {
 		}
 	}
 }
-	
+
 extension HttpClientTests {
 	static var allTests : [(String, (HttpClientTests) -> () throws -> Void)] {
 		return [
-		       	("testGet", testGet),
-		       	("testDelete", testDelete),
-		       	("testHead", testHead),
-		       	("testPost", testPost),
-		       	("testPut", testPut),
-		       	("testHttpResourceInitializer",testHttpResourceInitializer),
-		       	("testHttpResourceByAddingPathComponent",testHttpResourceByAddingPathComponent),
-		       	("testNotFound", testNotFound),
-		       	("testUnauthorized", testUnauthorized)
+			("testHttpResourceInitializer",testHttpResourceInitializer),
+			("testHttpResourceByAddingPathComponent",testHttpResourceByAddingPathComponent),
+			("testHttpResourceFullUri",testHttpResourceFullUri),
+			("testGet", testGet),
+			("testPost", testPost),
+			("testHead", testHead),
+			("testPut", testPut),
+			("testDelete", testDelete),
+			("testNotFound", testNotFound),
+			("testUnauthorized", testUnauthorized),
+			("testResponseHeaders", testResponseHeaders)
 		]
 	}
 }
