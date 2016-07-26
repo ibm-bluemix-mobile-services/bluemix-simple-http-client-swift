@@ -1,17 +1,22 @@
 os:
   - linux
-  - osx
+#  - osx # commented out until Travis fix git 2.9.0 issue
+
 language: generic
+
 env:
   global:
-  - SWIFT_VERSION=DEVELOPMENT-SNAPSHOT-2016-06-06-a
+  - SWIFT_VERSION=DEVELOPMENT-SNAPSHOT-2016-06-20-a
+
 branches:
   only:
     - master
     - development
+
 sudo: required
 dist: trusty
-osx_image: xcode7.3
+osx_image: xcode8
+
 install:
   - eval "$(cat ./install-swiftenv.sh)"
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
@@ -20,7 +25,9 @@ install:
       sudo rm /usr/bin/ld && sudo ln -s /usr/bin/ld.gold /usr/bin/ld;
       cd swift-corelibs-libdispatch && git submodule init && git submodule update && sh ./autogen.sh && ./configure --with-swift-toolchain=/home/travis/.swiftenv/versions/$SWIFT_VERSION/usr --prefix=/home/travis/.swiftenv/versions/$SWIFT_VERSION/usr && make && make install;
     fi
+
 script:
+  - git --version
   - swift build --clean # clean built artifacts if present
   - swift package fetch # clones all dependencies
   - swift build -Xcc -fblocks -Xlinker -rpath -Xlinker $(pwd)/.build/debug/ # build project
