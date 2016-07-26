@@ -25,7 +25,7 @@ install:
       sudo rm /usr/bin/ld && sudo ln -s /usr/bin/ld.gold /usr/bin/ld;
       cd swift-corelibs-libdispatch && git submodule init && git submodule update && sh ./autogen.sh && ./configure --with-swift-toolchain=/home/travis/.swiftenv/versions/$SWIFT_VERSION/usr --prefix=/home/travis/.swiftenv/versions/$SWIFT_VERSION/usr && make && make install;
     fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx"]]; then
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
       brew unlink git;
       brew install git;
     fi
