@@ -1,6 +1,6 @@
 os:
   - linux
-  - osx
+#  - osx # commented out until Travis fix git 2.9.0 issue
 
 language: generic
 
@@ -16,10 +16,6 @@ branches:
 sudo: required
 dist: trusty
 osx_image: xcode8
-
-before_install:
-  - git submodule init
-  - git submodule update
 
 install:
   - eval "$(cat ./install-swiftenv.sh)"
