@@ -26,8 +26,8 @@ install:
       cd swift-corelibs-libdispatch && git submodule init && git submodule update && sh ./autogen.sh && ./configure --with-swift-toolchain=/home/travis/.swiftenv/versions/$SWIFT_VERSION/usr --prefix=/home/travis/.swiftenv/versions/$SWIFT_VERSION/usr && make && make install;
 	else
 	  # Install git CLI using hoebrew until Travis-CI gets off of git CLI 2.9.0 which has problems with Swift.
-	  brew unlink git
-	  brew install git
+	  brew unlink git;
+	  brew install git;
     fi
   - git --version
 
