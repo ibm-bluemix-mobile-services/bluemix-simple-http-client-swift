@@ -93,7 +93,7 @@ internal extension HttpClient {
 	internal class func sendRequest(to resource: HttpResource, method:String, headers:[String:String]? = nil, data: Data? = nil, completionHandler: @escaping NetworkRequestCompletionHandler = NOOPNetworkRequestCompletionHandler){
 
 		let requestUrl = URL(string: "\(resource.schema)://\(resource.host)\(resource.path)")!
-		var request = URLRequest(url: requestUrl)
+		var request = URLRequest(url: requestUrl, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
 		request.httpMethod = method;
 
 		if let headers = headers {

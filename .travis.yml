@@ -35,7 +35,3 @@ script:
   - swift package fetch # clones all dependencies
   - swift build -Xcc -fblocks -Xlinker -rpath -Xlinker $(pwd)/.build/debug/ # build project
   - swift test # run tests
-
-# Removed from linux install, libdispatch is part of Swift runtime now
-# git clone -b experimental/foundation https://github.com/apple/swift-corelibs-libdispatch.git;
-# cd swift-corelibs-libdispatch && git submodule init && git submodule update && sh ./autogen.sh && ./configure --with-swift-toolchain=/home/travis/.swiftenv/versions/$SWIFT_VERSION/usr --prefix=/home/travis/.swiftenv/versions/$SWIFT_VERSION/usr && make && make install;
