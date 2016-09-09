@@ -13,7 +13,7 @@
 
 ///	Used to indicate various failure types that might occur during HTTP operations
 /// All 2xx and 3xx statuses are considered success, all 4xx and 5xx statuses are considered errors
-public enum HttpError: Int, ErrorProtocol{
+public enum HttpError: Int, Error{
 	
 	/// Indicates a failure during connection attempt. Connection could not be established
 	case ConnectionFailure = 1

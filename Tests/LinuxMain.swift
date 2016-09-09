@@ -1,5 +1,5 @@
 import XCTest
-@testable import SimpleHttpClientTestSuite
+@testable import SimpleHttpClientTests
 
 XCTMain([
 	testCase(HttpClientTests.allTests)

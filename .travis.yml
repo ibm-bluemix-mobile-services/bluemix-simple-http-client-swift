@@ -5,12 +5,13 @@ language: generic
 
 env:
   global:
-  - SWIFT_VERSION=DEVELOPMENT-SNAPSHOT-2016-06-20-a
+  - SWIFT_VERSION=DEVELOPMENT-SNAPSHOT-2016-09-07-a
 
-branches:
-  only:
-    - master
-    - development
+notifications:
+  email:
+    on_success: always
+    on_failure: always
+
 sudo: required
 
 dist: trusty
@@ -21,9 +22,7 @@ install:
   - eval "$(cat ./install-swiftenv.sh)"
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
       sudo apt-get install -y libcurl4-openssl-dev libblocksruntime-dev libkqueue-dev libpthread-workqueue-dev libbsd-dev;
-      git clone -b experimental/foundation https://github.com/apple/swift-corelibs-libdispatch.git;
       sudo rm /usr/bin/ld && sudo ln -s /usr/bin/ld.gold /usr/bin/ld;
-      cd swift-corelibs-libdispatch && git submodule init && git submodule update && sh ./autogen.sh && ./configure --with-swift-toolchain=/home/travis/.swiftenv/versions/$SWIFT_VERSION/usr --prefix=/home/travis/.swiftenv/versions/$SWIFT_VERSION/usr && make && make install;
     fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
       brew unlink git;
@@ -36,3 +35,7 @@ script:
   - swift package fetch # clones all dependencies
   - swift build -Xcc -fblocks -Xlinker -rpath -Xlinker $(pwd)/.build/debug/ # build project
   - swift test # run tests
+
+# Removed from linux install, libdispatch is part of Swift runtime now
+# git clone -b experimental/foundation https://github.com/apple/swift-corelibs-libdispatch.git;
+# cd swift-corelibs-libdispatch && git submodule init && git submodule update && sh ./autogen.sh && ./configure --with-swift-toolchain=/home/travis/.swiftenv/versions/$SWIFT_VERSION/usr --prefix=/home/travis/.swiftenv/versions/$SWIFT_VERSION/usr && make && make install;
