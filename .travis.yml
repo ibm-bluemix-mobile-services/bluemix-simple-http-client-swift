@@ -7,10 +7,11 @@ env:
   global:
   - SWIFT_VERSION=DEVELOPMENT-SNAPSHOT-2016-09-07-a
 
-branches:
-  only:
-    - master
-    - development
+notifications:
+  email:
+    on_success: always
+    on_failure: always
+
 sudo: required
 
 dist: trusty
