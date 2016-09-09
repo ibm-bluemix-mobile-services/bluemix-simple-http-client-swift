@@ -138,14 +138,12 @@ internal extension HttpClient {
 		logger.debug("Sending \(method) request to \(request.url)")
 
 		if let data = data {
-			print("doing upload task")
 			#if os(Linux)
 				urlSession.uploadTask(with: request, fromData: data, completionHandler: callback).resume()
 			#else
 				urlSession.uploadTask(with: request, from: data, completionHandler: callback).resume()
 			#endif
 		} else {
-			print("doing data task")
 			urlSession.dataTask(with: request, completionHandler: callback).resume()
 		}
 	}
