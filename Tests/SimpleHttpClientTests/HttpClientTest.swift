@@ -7,7 +7,7 @@ class HttpClientTests: XCTestCase {
 	let httpsResource = HttpResource(schema: "https", host: "httpbin.org", port: "443")
 	let testString = "TestDataSimpleHttpClient"
 	var testData:Data!
-	let expectationTimeout = 20.0
+	let expectationTimeout = 30.0
 
 	override func setUp() {
 		self.continueAfterFailure = false
