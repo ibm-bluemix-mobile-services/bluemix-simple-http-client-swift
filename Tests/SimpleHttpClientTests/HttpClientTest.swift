@@ -3,15 +3,19 @@ import Foundation
 @testable import SimpleHttpClient
 
 class HttpClientTests: XCTestCase {
-	let httpResource = HttpResource(schema: "http", host: "httpbin.org", port: "80")
-	let httpsResource = HttpResource(schema: "https", host: "httpbin.org", port: "443")
-	let testString = "TestDataSimpleHttpClient"
-	var testData:Data!
+	private static let httpbinHost = "httpbin.mybluemix.net"
+	private static let testString = "TestDataSimpleHttpClient"
+
+	let httpResource = HttpResource(schema: "http", host: httpbinHost, port: "80")
+	let httpsResource = HttpResource(schema: "https", host: httpbinHost, port: "443")
+	var testData = testString.data(using: String.Encoding.utf8)
 	let expectationTimeout = 30.0
 
 	override func setUp() {
 		self.continueAfterFailure = false
-		testData = testString.data(using: String.Encoding.utf8)
+//		testData = testString.data(using: String.Encoding.utf8)
+//		let httpResource = HttpResource(schema: "http", host: httpbinHost, port: "80")
+//		let httpsResource = HttpResource(schema: "https", host: httpbinHost, port: "443")
 	}
 
 	func testHttpResourceInitializer(){
@@ -25,14 +29,14 @@ class HttpClientTests: XCTestCase {
 	func testHttpResourceByAddingPathComponent(){
 		let resource = httpsResource.resourceByAddingPathComponent(pathComponent: "/component")
 		XCTAssertEqual(resource.schema, "https", "resource.schema != https")
-		XCTAssertEqual(resource.host, "httpbin.org", "resource.host != httpbin.org")
+		XCTAssertEqual(resource.host, HttpClientTests.httpbinHost, "resource.host != \(HttpClientTests.httpbinHost)")
 		XCTAssertEqual(resource.port, "443", "resource.port != 443")
 		XCTAssertEqual(resource.path, "/component", "resource.path != /component")
 	}
 
 	func testHttpResourceFullUri(){
 		let resource = httpsResource.resourceByAddingPathComponent(pathComponent: "/a?e=f&g=h")
-		XCTAssertEqual(resource.uri, "https://httpbin.org:443/a?e=f&g=h", "resource.uri != https://httpbin.org:443/a?e=f&g=h")
+		XCTAssertEqual(resource.uri, "https://\(HttpClientTests.httpbinHost):443/a?e=f&g=h", "resource.uri != https://\(HttpClientTests.httpbinHost):443/a?e=f&g=h")
 	}
 
 	func testGet(){
@@ -63,7 +67,7 @@ class HttpClientTests: XCTestCase {
 			XCTAssertNotNil(headers, "headers == nil")
 			XCTAssertNotNil(data, "data == nil")
 			let responseString = String(data: data!, encoding:String.Encoding.utf8)
-			XCTAssertTrue(responseString!.contains(self.testString))
+			XCTAssertTrue(responseString!.contains(HttpClientTests.testString))
 			exp.fulfill()
 		}
 		waitForExpectations(timeout: expectationTimeout, handler: nil)
@@ -81,7 +85,7 @@ class HttpClientTests: XCTestCase {
 			XCTAssertNotNil(headers, "headers == nil")
 			XCTAssertNotNil(data, "data == nil")
 			let responseString = String(data: data!, encoding:String.Encoding.utf8)
-			XCTAssertTrue(responseString!.contains(self.testString))
+			XCTAssertTrue(responseString!.contains(HttpClientTests.testString))
 			exp.fulfill()
 		}
 		waitForExpectations(timeout: expectationTimeout, handler: nil)
