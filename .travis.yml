@@ -5,7 +5,7 @@ language: generic
 
 env:
   global:
-  - SWIFT_VERSION=DEVELOPMENT-SNAPSHOT-2016-06-20-a
+  - SWIFT_VERSION=DEVELOPMENT-SNAPSHOT-2016-09-07-a
 
 branches:
   only:

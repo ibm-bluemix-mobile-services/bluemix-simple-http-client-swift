@@ -6,15 +6,12 @@ class HttpClientTests: XCTestCase {
 	let httpResource = HttpResource(schema: "http", host: "httpbin.org", port: "80")
 	let httpsResource = HttpResource(schema: "https", host: "httpbin.org", port: "443")
 	let testString = "TestDataSimpleHttpClient"
-	var testData:NSData!
+	var testData:Data!
+	let expectationTimeout = 20.0
 
 	override func setUp() {
 		self.continueAfterFailure = false
-		#if os(Linux)
-			testData = testString.data(using: NSUTF8StringEncoding)
-		#else
-			testData = testString.data(using: String.Encoding.utf8)
-		#endif
+		testData = testString.data(using: String.Encoding.utf8)
 	}
 
 	func testHttpResourceInitializer(){
@@ -39,16 +36,25 @@ class HttpClientTests: XCTestCase {
 	}
 
 	func testGet(){
+		let exp = expectation(description: "exp")
+
 		let resource = httpsResource.resourceByAddingPathComponent(pathComponent: "/get")
+
 		HttpClient.get(resource: resource) { error, status, headers, data in
+			print("Status \(status)")
 			XCTAssertNil(error, "error != nil")
 			XCTAssertTrue(status == 200, "status != 200")
 			XCTAssertNotNil(headers, "headers == nil")
 			XCTAssertNotNil(data, "data == nil")
+			exp.fulfill()
 		}
+
+		waitForExpectations(timeout: expectationTimeout, handler: nil)
 	}
 
 	func testPost(){
+		let exp = expectation(description: "expectation")
+
 		let resource = httpsResource.resourceByAddingPathComponent(pathComponent: "/post")
 		let headers = ["Content-Type":"text/plain"]
 		HttpClient.post(resource: resource, headers: headers, data: testData) { error, status, headers, data in
@@ -56,24 +62,17 @@ class HttpClientTests: XCTestCase {
 			XCTAssertTrue(status == 200, "status != 200")
 			XCTAssertNotNil(headers, "headers == nil")
 			XCTAssertNotNil(data, "data == nil")
-			#if os(Linux)
-				let responseString = String(data: data!, encoding:NSUTF8StringEncoding)
-			#else
-				let responseString = String(data: data as! Data, encoding:String.Encoding.utf8)
-			#endif
+			let responseString = String(data: data!, encoding:String.Encoding.utf8)
 			XCTAssertTrue(responseString!.contains(self.testString))
+			exp.fulfill()
 		}
-	}
+		waitForExpectations(timeout: expectationTimeout, handler: nil)
 
-	func testHead(){
-		HttpClient.head(resource: httpResource) { error, status, headers, data in
-			XCTAssertNil(error, "error != nil")
-			XCTAssertTrue(status == 200, "status != 200")
-			XCTAssertNotNil(headers, "headers == nil")
-		}
 	}
 
 	func testPut(){
+		let exp = expectation(description: "expectation")
+
 		let resource = httpsResource.resourceByAddingPathComponent(pathComponent: "/put")
 		let headers = ["Content-Type":"text/plain"]
 		HttpClient.put(resource: resource, headers: headers, data: testData) { error, status, headers, data in
@@ -81,50 +80,69 @@ class HttpClientTests: XCTestCase {
 			XCTAssertTrue(status == 200, "status != 200")
 			XCTAssertNotNil(headers, "headers == nil")
 			XCTAssertNotNil(data, "data == nil")
-			#if os(Linux)
-				let responseString = String(data: data!, encoding:NSUTF8StringEncoding)
-			#else
-				let responseString = String(data: data as! Data, encoding:String.Encoding.utf8)
-			#endif
+			let responseString = String(data: data!, encoding:String.Encoding.utf8)
 			XCTAssertTrue(responseString!.contains(self.testString))
+			exp.fulfill()
 		}
+		waitForExpectations(timeout: expectationTimeout, handler: nil)
+
 	}
 
 	func testDelete(){
+		let exp = expectation(description: "expectation")
+
 		let resource = httpsResource.resourceByAddingPathComponent(pathComponent: "/delete")
 		let headers = ["Content-Type":"text/plain"]
 		HttpClient.delete(resource: resource, headers: headers) { error, status, headers, data in
 			XCTAssertNil(error, "error != nil")
 			XCTAssertTrue(status == 200, "status != 200")
 			XCTAssertNotNil(headers, "headers == nil")
+			exp.fulfill()
 		}
+		waitForExpectations(timeout: expectationTimeout, handler: nil)
+
 	}
 
 	func testNotFound(){
+		let exp = expectation(description: "expectation")
+
 		let resource = httpsResource.resourceByAddingPathComponent(pathComponent: "/afasdfasdfasdf")
 		HttpClient.get(resource: resource) { error, status, headers, data in
 			XCTAssertNotNil(error, "error == nil")
 			XCTAssertEqual(error?.rawValue, HttpError.NotFound.rawValue, "error.rawValue != HttpError.NotFound.rawValue")
 			XCTAssertTrue(status == 404, "status != 404")
+			exp.fulfill()
 		}
+		waitForExpectations(timeout: expectationTimeout, handler: nil)
+
 	}
 
 	func testUnauthorized(){
+		let exp = expectation(description: "expectation")
+
 		let resource = httpsResource.resourceByAddingPathComponent(pathComponent: "/basic-auth/user/passwd")
 		HttpClient.get(resource: resource) { error, status, headers, data in
 			XCTAssertNotNil(error, "error == nil")
 			XCTAssertEqual(error?.rawValue, HttpError.Unauthorized.rawValue, "error.rawValue != HttpError.Unauthorized.rawValue")
 			XCTAssertTrue(status == 401, "status != 401")
+			exp.fulfill()
 		}
+		waitForExpectations(timeout: expectationTimeout, handler: nil)
+
 	}
 
 	func testResponseHeaders(){
+		let exp = expectation(description: "expectation")
+
 		let resource = httpsResource.resourceByAddingPathComponent(pathComponent: "/headers")
 		HttpClient.get(resource: resource) { error, status, headers, data in
 			XCTAssertNil(error, "error != nil")
 			XCTAssertNotNil(headers, "headers == nil")
 			XCTAssertNotNil(headers!["Content-Type"], "headers[Content-Type] == nil")
+			exp.fulfill()
 		}
+		waitForExpectations(timeout: expectationTimeout, handler: nil)
+
 	}
 }
 
@@ -136,11 +154,10 @@ extension HttpClientTests {
 			("testHttpResourceFullUri",testHttpResourceFullUri),
 			("testGet", testGet),
 			("testPost", testPost),
-			("testHead", testHead),
 			("testPut", testPut),
 			("testDelete", testDelete),
-			("testNotFound", testNotFound),
-			("testUnauthorized", testUnauthorized),
+//			("testNotFound", testNotFound),
+//			("testUnauthorized", testUnauthorized),
 			("testResponseHeaders", testResponseHeaders)
 		]
 	}

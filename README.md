@@ -16,11 +16,12 @@ import PackageDescription
 
 let package = Package(
     dependencies: [
-        .Package(url: "https://github.com/ibm-bluemix-mobile-services/bluemix-simple-http-client-swift.git", majorVersion: 0, minor: 4)
+        .Package(url: "https://github.com/ibm-bluemix-mobile-services/bluemix-simple-http-client-swift.git", majorVersion: 0, minor: 5)
     ]
 )
 ```
 
+* 0.5.x releases were tested on OSX and Linux with DEVELOPMENT-SNAPSHOT-2016-09-07-a
 * 0.4.x releases were tested on OSX and Linux with DEVELOPMENT-SNAPSHOT-2016-06-20-a
 * 0.3.x releases were tested on OSX and Linux with DEVELOPMENT-SNAPSHOT-2016-06-06-a
 * 0.2.x releases were tested on OSX and Linux with DEVELOPMENT-SNAPSHOT-2016-05-03-a
