@@ -24,10 +24,6 @@ install:
       sudo apt-get install -y libcurl4-openssl-dev libblocksruntime-dev libkqueue-dev libpthread-workqueue-dev libbsd-dev;
       sudo rm /usr/bin/ld && sudo ln -s /usr/bin/ld.gold /usr/bin/ld;
     fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      brew unlink git;
-      brew install git;
-    fi
   - git --version
 
 script:
