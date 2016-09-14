@@ -20,7 +20,7 @@ osx_image: xcode8
 
 install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-      eval "$(cat ./install-swiftenv.sh)"
+      eval "$(cat ./install-swiftenv.sh)";
       sudo apt-get install -y libcurl4-openssl-dev libblocksruntime-dev libkqueue-dev libpthread-workqueue-dev libbsd-dev;
       sudo rm /usr/bin/ld && sudo ln -s /usr/bin/ld.gold /usr/bin/ld;
     fi
