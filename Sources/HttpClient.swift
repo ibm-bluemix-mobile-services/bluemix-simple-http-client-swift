@@ -13,6 +13,7 @@
 
 import Foundation
 import SimpleLogger
+import KituraNet
 
 /// An alias for a network request completion handler, receives back error, status, headers and data
 public typealias NetworkRequestCompletionHandler = (_ error:HttpError?, _ status:Int?, _ headers: [String:String]?, _ data:Data?) -> Void
@@ -23,7 +24,7 @@ internal let NOOPNetworkRequestCompletionHandler:NetworkRequestCompletionHandler
 public class HttpClient{
 
 	public static let logger = Logger(forName: "HttpClient")
-	public static let urlSession = URLSession(configuration: URLSessionConfiguration.default)
+	//public static let urlSession = URLSession(configuration: URLSessionConfiguration.default)
 
 	/**
 	Send a GET request
@@ -80,10 +81,9 @@ public class HttpClient{
 }
 
 internal extension HttpClient {
-
+	
 	/**
 	Send a request
-
 	- Parameter url: The URL to send request to
 	- Parameter method: The HTTP method to use
 	- Parameter contentType: The value of a 'Content-Type' header
@@ -91,60 +91,145 @@ internal extension HttpClient {
 	- Parameter completionHandler: NetworkRequestCompletionHandler instance
 	*/
 	internal class func sendRequest(to resource: HttpResource, method:String, headers:[String:String]? = nil, data: Data? = nil, completionHandler: @escaping NetworkRequestCompletionHandler = NOOPNetworkRequestCompletionHandler){
-
-		let requestUrl = URL(string: "\(resource.schema)://\(resource.host)\(resource.path)")!
-		var request = URLRequest(url: requestUrl, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
-		request.httpMethod = method;
-
+		
+		
+		var requestOptions = Array<ClientRequest.Options>()
+		
+		requestOptions.append(.method(method))
+		requestOptions.append(.schema(resource.schema + "://"))
+		requestOptions.append(.hostname(resource.host))
+		requestOptions.append(.path(resource.path))
+		
+		let request = HTTP.request(requestOptions) { (response) in
+			handleResponse(response: response, completionHandler: completionHandler)
+		}
+		
 		if let headers = headers {
 			for (name, value) in headers{
-				request.setValue(value, forHTTPHeaderField: name)
+				request.headers[name] = value
 			}
 		}
-
-		let callback = {(data:Data?, response:URLResponse?, error: Error?) -> Void in
-			if let response = response {
-				let httpResponse:HTTPURLResponse  = response as! HTTPURLResponse
-
-				// Handle headers
-				var headers:[String:String] = [:]
-				for (name, value) in httpResponse.allHeaderFields{
-					#if os(Linux)
-						headers.updateValue(value, forKey: name)
-					#else
-						headers.updateValue(value as! String, forKey: name as! String)
-					#endif
-				}
-
-				switch httpResponse.statusCode {
-				case 401:
-					logger.error(String(describing: HttpError.Unauthorized))
-					return completionHandler(HttpError.Unauthorized, httpResponse.statusCode, headers, data)
-				case 404:
-					logger.error(String(describing: HttpError.NotFound))
-					return completionHandler(HttpError.NotFound, httpResponse.statusCode, headers, data)
-				case 400 ... 599:
-					logger.error(String(describing: HttpError.ServerError))
-					return completionHandler(HttpError.ServerError, httpResponse.statusCode, headers, data)
-				default:
-					return completionHandler(nil, httpResponse.statusCode, headers, data)
-				}
-			} else {
-				completionHandler(HttpError.ConnectionFailure, nil, nil, nil)
-			}
-		}
-
-
-		logger.debug("Sending \(method) request to \(request.url)")
-
+		
+		logger.debug("Sending \(method) request to \(resource.uri)")
+		
 		if let data = data {
-			#if os(Linux)
-				urlSession.uploadTask(with: request, fromData: data, completionHandler: callback).resume()
-			#else
-				urlSession.uploadTask(with: request, from: data, completionHandler: callback).resume()
-			#endif
+			request.end(data)
 		} else {
-			urlSession.dataTask(with: request, completionHandler: callback).resume()
+			request.end()
+		}
+	}
+	
+	internal class func handleResponse(response: ClientResponse?, completionHandler: NetworkRequestCompletionHandler){
+		if let response = response {
+			
+			// Handle headers
+			var headers:[String:String] = [:]
+			
+			var iterator = response.headers.makeIterator()
+			
+			while let header = iterator.next(){
+				headers.updateValue(header.value[0], forKey: header.key)
+			}
+			
+			// Handle response body
+			var responseData = Data()
+			do {
+				try response.readAllData(into: &responseData)
+			} catch {
+				return completionHandler(HttpError.FailedParsingResponse, response.status, headers, responseData)
+			}
+			
+			switch response.status {
+			case 401:
+				logger.error(String(describing: HttpError.Unauthorized))
+				return completionHandler(HttpError.Unauthorized, response.status, headers, responseData)
+			case 404:
+				logger.error(String(describing: HttpError.NotFound))
+				return completionHandler(HttpError.NotFound, response.status, headers, responseData)
+			case 400 ... 599:
+				logger.error(String(describing: HttpError.ServerError))
+				return completionHandler(HttpError.ServerError, response.status, headers, responseData)
+			default:
+				return completionHandler(nil, response.status, headers, responseData)
+			}
+			
+		} else {
+			completionHandler(HttpError.ConnectionFailure, nil, nil, nil)
 		}
 	}
 }
+
+
+
+
+
+// HttpClient implementation using URLSession. Commented out till URLSession is fixed
+//internal extension HttpClient {
+//
+//	/**
+//	Send a request
+//
+//	- Parameter url: The URL to send request to
+//	- Parameter method: The HTTP method to use
+//	- Parameter contentType: The value of a 'Content-Type' header
+//	- Parameter data: The data to send in request body
+//	- Parameter completionHandler: NetworkRequestCompletionHandler instance
+//	*/
+//	internal class func sendRequest(to resource: HttpResource, method:String, headers:[String:String]? = nil, data: Data? = nil, completionHandler: @escaping NetworkRequestCompletionHandler = NOOPNetworkRequestCompletionHandler){
+//
+//		let requestUrl = URL(string: "\(resource.schema)://\(resource.host)\(resource.path)")!
+//		var request = URLRequest(url: requestUrl, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
+//		request.httpMethod = method;
+//
+//		if let headers = headers {
+//			for (name, value) in headers{
+//				request.setValue(value, forHTTPHeaderField: name)
+//			}
+//		}
+//
+//		let callback = {(data:Data?, response:URLResponse?, error: Error?) -> Void in
+//			if let response = response {
+//				let httpResponse:HTTPURLResponse  = response as! HTTPURLResponse
+//
+//				// Handle headers
+//				var headers:[String:String] = [:]
+//				for (name, value) in httpResponse.allHeaderFields{
+//					#if os(Linux)
+//						headers.updateValue(value, forKey: name)
+//					#else
+//						headers.updateValue(value as! String, forKey: name as! String)
+//					#endif
+//				}
+//
+//				switch httpResponse.statusCode {
+//				case 401:
+//					logger.error(String(describing: HttpError.Unauthorized))
+//					return completionHandler(HttpError.Unauthorized, httpResponse.statusCode, headers, data)
+//				case 404:
+//					logger.error(String(describing: HttpError.NotFound))
+//					return completionHandler(HttpError.NotFound, httpResponse.statusCode, headers, data)
+//				case 400 ... 599:
+//					logger.error(String(describing: HttpError.ServerError))
+//					return completionHandler(HttpError.ServerError, httpResponse.statusCode, headers, data)
+//				default:
+//					return completionHandler(nil, httpResponse.statusCode, headers, data)
+//				}
+//			} else {
+//				completionHandler(HttpError.ConnectionFailure, nil, nil, nil)
+//			}
+//		}
+//
+//
+//		logger.debug("Sending \(method) request to \(request.url)")
+//
+//		if let data = data {
+//			#if os(Linux)
+//				urlSession.uploadTask(with: request, fromData: data, completionHandler: callback).resume()
+//			#else
+//				urlSession.uploadTask(with: request, from: data, completionHandler: callback).resume()
+//			#endif
+//		} else {
+//			urlSession.dataTask(with: request, completionHandler: callback).resume()
+//		}
+//	}
+//}
