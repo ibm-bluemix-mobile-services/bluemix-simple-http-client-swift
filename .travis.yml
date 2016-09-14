@@ -5,7 +5,7 @@ language: generic
 
 env:
   global:
-  - SWIFT_VERSION=DEVELOPMENT-SNAPSHOT-2016-09-07-a
+  - SWIFT_VERSION=3.0
 
 notifications:
   email:

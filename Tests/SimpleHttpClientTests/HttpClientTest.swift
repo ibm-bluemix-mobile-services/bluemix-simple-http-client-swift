@@ -160,8 +160,8 @@ extension HttpClientTests {
 			("testPost", testPost),
 			("testPut", testPut),
 			("testDelete", testDelete),
-//			("testNotFound", testNotFound),
-//			("testUnauthorized", testUnauthorized),
+			("testNotFound", testNotFound),
+			("testUnauthorized", testUnauthorized),
 			("testResponseHeaders", testResponseHeaders)
 		]
 	}
