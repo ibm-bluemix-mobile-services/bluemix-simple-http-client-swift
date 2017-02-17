@@ -78,46 +78,46 @@ public class HttpClient{
 	public class func head(resource: HttpResource, headers:[String:String]? = nil, completionHandler: @escaping NetworkRequestCompletionHandler = NOOPNetworkRequestCompletionHandler){
 		HttpClient.sendRequest(to: resource, method: "HEAD" , headers: headers, completionHandler: completionHandler)
 	}
+    
+    /**
+     Send a request
+     - Parameter resource: HttpResource instance describing URI schema, host, port and path
+     - Parameter method: The HTTP method to use
+     - Parameter headers: Dictionary of Http headers to add to request
+     - Parameter data: The data to send in request body
+     - Parameter completionHandler: NetworkRequestCompletionHandler instance
+     */
+    public class func sendRequest(to resource: HttpResource, method:String, headers:[String:String]? = nil, data: Data? = nil, completionHandler: @escaping NetworkRequestCompletionHandler = NOOPNetworkRequestCompletionHandler){
+        
+        
+        var requestOptions = Array<ClientRequest.Options>()
+        
+        requestOptions.append(.method(method))
+        requestOptions.append(.schema(resource.schema + "://"))
+        requestOptions.append(.hostname(resource.host))
+        requestOptions.append(.path(resource.path))
+        
+        let request = HTTP.request(requestOptions) { (response) in
+            handleResponse(response: response, completionHandler: completionHandler)
+        }
+        
+        if let headers = headers {
+            for (name, value) in headers{
+                request.headers[name] = value
+            }
+        }
+        
+        logger.debug("Sending \(method) request to \(resource.uri)")
+        
+        if let data = data {
+            request.end(data)
+        } else {
+            request.end()
+        }
+    }
 }
 
 internal extension HttpClient {
-	
-	/**
-	Send a request
-	- Parameter url: The URL to send request to
-	- Parameter method: The HTTP method to use
-	- Parameter contentType: The value of a 'Content-Type' header
-	- Parameter data: The data to send in request body
-	- Parameter completionHandler: NetworkRequestCompletionHandler instance
-	*/
-	internal class func sendRequest(to resource: HttpResource, method:String, headers:[String:String]? = nil, data: Data? = nil, completionHandler: @escaping NetworkRequestCompletionHandler = NOOPNetworkRequestCompletionHandler){
-		
-		
-		var requestOptions = Array<ClientRequest.Options>()
-		
-		requestOptions.append(.method(method))
-		requestOptions.append(.schema(resource.schema + "://"))
-		requestOptions.append(.hostname(resource.host))
-		requestOptions.append(.path(resource.path))
-		
-		let request = HTTP.request(requestOptions) { (response) in
-			handleResponse(response: response, completionHandler: completionHandler)
-		}
-		
-		if let headers = headers {
-			for (name, value) in headers{
-				request.headers[name] = value
-			}
-		}
-		
-		logger.debug("Sending \(method) request to \(resource.uri)")
-		
-		if let data = data {
-			request.end(data)
-		} else {
-			request.end()
-		}
-	}
 	
 	internal class func handleResponse(response: ClientResponse?, completionHandler: NetworkRequestCompletionHandler){
 		if let response = response {
