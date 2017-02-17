@@ -36,12 +36,12 @@ public struct HttpResource{
 	}
 
 	/**
-	Initialize the HttpResource by specifying all properties
+        Initialize the HttpResource by specifying all properties
 
-	- Parameter schema: Request schema, should be either http or https
-	- Parameter host: Resource host name, e.g. www.example.com
-	- Parameter port: Resource port, e.g. 80
-	- Parameter path: Resource path, e.g. /my/resource/id/123
+        - parameter schema: Request schema, should be either http or https
+        - parameter host: Resource host name, e.g. www.example.com
+        - parameter port: Resource port, e.g. 80
+        - parameter path: Resource path, e.g. /my/resource/id/123
 	*/
 
 	public init(schema:String, host: String, port: String? = nil, path: String = "") {
@@ -52,9 +52,9 @@ public struct HttpResource{
 	}
 
 	/**
-	Create a new HttpResource by adding components to path
+        Create a new HttpResource by adding components to path
 
-	- Parameter pathComponent: components to add
+        - parameter pathComponent: components to add
 	*/
 	public func resourceByAddingPathComponent(pathComponent:String) -> HttpResource {
 		return HttpResource(schema: self.schema, host: self.host, port: self.port, path: self.path + pathComponent)
