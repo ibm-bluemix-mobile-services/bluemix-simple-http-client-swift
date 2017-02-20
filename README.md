@@ -21,12 +21,13 @@ let package = Package(
 )
 ```
 
-* 0.5.x releases were tested on OSX and Linux with 3.0.1
-* 0.5.x releases were tested on OSX and Linux with DEVELOPMENT-SNAPSHOT-2016-09-07-a
-* 0.4.x releases were tested on OSX and Linux with DEVELOPMENT-SNAPSHOT-2016-06-20-a
-* 0.3.x releases were tested on OSX and Linux with DEVELOPMENT-SNAPSHOT-2016-06-06-a
-* 0.2.x releases were tested on OSX and Linux with DEVELOPMENT-SNAPSHOT-2016-05-03-a
-* 0.1.x releases were tested on OSX and Linux with DEVELOPMENT-SNAPSHOT-2016-04-25-a
+* 0.6.x releases were tested on OSX and Linux with Swift 3.0.2
+* 0.5.x releases were tested on OSX and Linux with Swift 3.0.1
+* 0.5.x releases were tested on OSX and Linux with Swift DEVELOPMENT-SNAPSHOT-2016-09-07-a
+* 0.4.x releases were tested on OSX and Linux with Swift DEVELOPMENT-SNAPSHOT-2016-06-20-a
+* 0.3.x releases were tested on OSX and Linux with Swift DEVELOPMENT-SNAPSHOT-2016-06-06-a
+* 0.2.x releases were tested on OSX and Linux with Swift DEVELOPMENT-SNAPSHOT-2016-05-03-a
+* 0.1.x releases were tested on OSX and Linux with Swift DEVELOPMENT-SNAPSHOT-2016-04-25-a
 
 ## Setup
 

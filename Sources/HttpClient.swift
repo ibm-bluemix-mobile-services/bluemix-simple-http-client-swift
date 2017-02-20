@@ -27,10 +27,11 @@ public class HttpClient{
 	//public static let urlSession = URLSession(configuration: URLSessionConfiguration.default)
 
 	/**
-	Send a GET request
-	- Parameter resource: HttpResource instance describing URI schema, host, port and path
-	- Parameter headers: Dictionary of Http headers to add to request
-	- Parameter completionHandler: NetworkRequestCompletionHandler instance
+        Send a GET request
+     
+        - parameter resource: HttpResource instance describing URI schema, host, port and path
+        - parameter headers: Dictionary of Http headers to add to request
+        - parameter completionHandler: NetworkRequestCompletionHandler instance
 	*/
 	public class func get(resource: HttpResource, headers:[String:String]? = nil, completionHandler: @escaping NetworkRequestCompletionHandler = NOOPNetworkRequestCompletionHandler){
 
@@ -38,86 +39,91 @@ public class HttpClient{
 	}
 
 	/**
-	Send a PUT request
-	- Parameter resource: HttpResource instance describing URI schema, host, port and path
-	- Parameter headers: Dictionary of Http headers to add to request
-	- Parameter data: The data to send in request body
-	- Parameter completionHandler: NetworkRequestCompletionHandler instance
+        Send a PUT request
+     
+        - parameter resource: HttpResource instance describing URI schema, host, port and path
+        - parameter headers: Dictionary of Http headers to add to request
+        - parameter data: The data to send in request body
+        - parameter completionHandler: NetworkRequestCompletionHandler instance
 	*/
 	public class func put(resource: HttpResource, headers:[String:String]? = nil, data:Data? = nil, completionHandler: @escaping NetworkRequestCompletionHandler = NOOPNetworkRequestCompletionHandler){
 		HttpClient.sendRequest(to: resource, method: "PUT" , headers: headers, data: data, completionHandler: completionHandler)
 	}
 
 	/**
-	Send a DELETE request
-	- Parameter resource: HttpResource instance describing URI schema, host, port and path
-	- Parameter headers: Dictionary of Http headers to add to request
-	- Parameter completionHandler: NetworkRequestCompletionHandler instance
+        Send a DELETE request
+     
+        - parameter resource: HttpResource instance describing URI schema, host, port and path
+        - parameter headers: Dictionary of Http headers to add to request
+        - parameter completionHandler: NetworkRequestCompletionHandler instance
 	*/
 	public class func delete(resource: HttpResource, headers:[String:String]? = nil, completionHandler: @escaping NetworkRequestCompletionHandler = NOOPNetworkRequestCompletionHandler){
 		HttpClient.sendRequest(to: resource, method: "DELETE" , headers: headers, completionHandler: completionHandler)
 	}
 
 	/**
-	Send a POST request
-	- Parameter resource: HttpResource instance describing URI schema, host, port and path
-	- Parameter headers: Dictionary of Http headers to add to request
-	- Parameter data: The data to send in request body
-	- Parameter completionHandler: NetworkRequestCompletionHandler instance
+        Send a POST request
+     
+        - parameter resource: HttpResource instance describing URI schema, host, port and path
+        - parameter headers: Dictionary of Http headers to add to request
+        - parameter data: The data to send in request body
+        - parameter completionHandler: NetworkRequestCompletionHandler instance
 	*/
 	public class func post(resource: HttpResource, headers:[String:String]? = nil, data:Data? = nil, completionHandler: @escaping NetworkRequestCompletionHandler = NOOPNetworkRequestCompletionHandler){
 		HttpClient.sendRequest(to: resource, method: "POST" , headers: headers, data: data, completionHandler: completionHandler)
 	}
 
 	/**
-	Send a HEAD request
-	- Parameter resource: HttpResource instance describing URI schema, host, port and path
-	- Parameter headers: Dictionary of Http headers to add to request
-	- Parameter completionHandler: NetworkRequestCompletionHandler instance
+        Send a HEAD request
+     
+        - parameter resource: HttpResource instance describing URI schema, host, port and path
+        - parameter headers: Dictionary of Http headers to add to request
+        - parameter completionHandler: NetworkRequestCompletionHandler instance
 	*/
 	public class func head(resource: HttpResource, headers:[String:String]? = nil, completionHandler: @escaping NetworkRequestCompletionHandler = NOOPNetworkRequestCompletionHandler){
 		HttpClient.sendRequest(to: resource, method: "HEAD" , headers: headers, completionHandler: completionHandler)
 	}
+    
+    /**
+         Send a request
+     
+         - parameter resource: HttpResource instance describing URI schema, host, port and path
+         - parameter method: The HTTP method to use
+         - parameter headers: Dictionary of Http headers to add to request
+         - parameter data: The data to send in request body
+         - parameter completionHandler: NetworkRequestCompletionHandler instance
+     */
+    public class func sendRequest(to resource: HttpResource, method:String, headers:[String:String]? = nil, data: Data? = nil, completionHandler: @escaping NetworkRequestCompletionHandler = NOOPNetworkRequestCompletionHandler){
+        
+        
+        var requestOptions = Array<ClientRequest.Options>()
+        
+        requestOptions.append(.method(method))
+        requestOptions.append(.schema(resource.schema + "://"))
+        requestOptions.append(.hostname(resource.host))
+        requestOptions.append(.path(resource.path))
+        
+        let request = HTTP.request(requestOptions) { (response) in
+            handleResponse(response: response, completionHandler: completionHandler)
+        }
+        
+        if let headers = headers {
+            for (name, value) in headers{
+                request.headers[name] = value
+            }
+        }
+        
+        logger.debug("Sending \(method) request to \(resource.uri)")
+        
+        if let data = data {
+            request.end(data)
+        } else {
+            request.end()
+        }
+    }
 }
 
 internal extension HttpClient {
-	
-	/**
-	Send a request
-	- Parameter url: The URL to send request to
-	- Parameter method: The HTTP method to use
-	- Parameter contentType: The value of a 'Content-Type' header
-	- Parameter data: The data to send in request body
-	- Parameter completionHandler: NetworkRequestCompletionHandler instance
-	*/
-	internal class func sendRequest(to resource: HttpResource, method:String, headers:[String:String]? = nil, data: Data? = nil, completionHandler: @escaping NetworkRequestCompletionHandler = NOOPNetworkRequestCompletionHandler){
-		
-		
-		var requestOptions = Array<ClientRequest.Options>()
-		
-		requestOptions.append(.method(method))
-		requestOptions.append(.schema(resource.schema + "://"))
-		requestOptions.append(.hostname(resource.host))
-		requestOptions.append(.path(resource.path))
-		
-		let request = HTTP.request(requestOptions) { (response) in
-			handleResponse(response: response, completionHandler: completionHandler)
-		}
-		
-		if let headers = headers {
-			for (name, value) in headers{
-				request.headers[name] = value
-			}
-		}
-		
-		logger.debug("Sending \(method) request to \(resource.uri)")
-		
-		if let data = data {
-			request.end(data)
-		} else {
-			request.end()
-		}
-	}
 	
 	internal class func handleResponse(response: ClientResponse?, completionHandler: NetworkRequestCompletionHandler){
 		if let response = response {
