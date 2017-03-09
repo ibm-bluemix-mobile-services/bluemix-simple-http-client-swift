@@ -1,5 +1,5 @@
 coverage_service: coveralls
-xcodeproj: BluemixPushNotifications.xcodeproj
-scheme: BluemixPushNotifications
+xcodeproj: SimpleHttpClient.xcodeproj
+scheme: SimpleHttpClient
 ignore:
   - Tests/*
