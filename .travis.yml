@@ -19,6 +19,9 @@ dist: trusty
 
 osx_image: xcode8.2
 
+before_install:
+    - rvm install 2.4.0
+
 install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
       eval "$(cat ./install-swiftenv.sh)";
@@ -41,6 +44,6 @@ after_success:
       swift package generate-xcodeproj;
       slather setup SimpleHttpClient.xcodeproj;
       xcodebuild -project SimpleHttpClient.xcodeproj -scheme SimpleHttpClient build;
-      xcodebuild -project SimpleHttpClient.xcodeproj -scheme SimpleHttpClient -enableCodeCoverage YES test;
+      xcodebuild test -project SimpleHttpClient.xcodeproj -scheme SimpleHttpClient -enableCodeCoverage YES;
       slather coverage --coveralls --binary-basename SimpleHttpClient.framework -v;
     fi
