@@ -4,6 +4,7 @@
 [![Platform][platform-badge]][platform-url]
 [![Build Status](https://travis-ci.org/ibm-bluemix-mobile-services/bluemix-simple-http-client-swift.svg?branch=master)](https://travis-ci.org/ibm-bluemix-mobile-services/bluemix-simple-http-client-swift)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/25b6fd1941dc49e8991a20325ddd2105)](https://www.codacy.com/app/ibm-bluemix-mobile-services/bluemix-simple-http-client-swift?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ibm-bluemix-mobile-services/bluemix-simple-http-client-swift&amp;utm_campaign=Badge_Grade)
+[![Coverage Status](https://coveralls.io/repos/github/ibm-bluemix-mobile-services/bluemix-simple-http-client-swift/badge.svg?branch=development)](https://coveralls.io/github/ibm-bluemix-mobile-services/bluemix-simple-http-client-swift?branch=development)
 
 [swift-badge]: https://img.shields.io/badge/Swift-3.0-orange.svg
 [swift-url]: https://swift.org
