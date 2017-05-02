@@ -45,7 +45,7 @@ class HttpClientTests: XCTestCase {
 		let resource = httpsResource.resourceByAddingPathComponent(pathComponent: "/get")
 
 		HttpClient.get(resource: resource) { error, status, headers, data in
-			print("Status \(status)")
+			print("Status \(status as Optional)")
 			XCTAssertNil(error, "error != nil")
 			XCTAssertTrue(status == 200, "status != 200")
 			XCTAssertNotNil(headers, "headers == nil")
