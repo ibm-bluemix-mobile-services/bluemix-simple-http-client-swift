@@ -35,8 +35,6 @@ install:
   - git --version
 
 script:
-  - swift build --clean # clean built artifacts if present
-  - swift package fetch # clones all dependencies
   - swift build # build project
   - swift test # run tests
 
