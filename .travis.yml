@@ -7,6 +7,7 @@ language: generic
 env:
   global:
   - SWIFT_VERSION=3.1.1
+  - SWIFT_VERSION=4.0.3
 
 notifications:
   email:
@@ -17,7 +18,7 @@ sudo: required
 
 dist: trusty
 
-osx_image: xcode8.3
+osx_image: xcode9.2
 
 before_install:
     - rvm install 2.4.0
@@ -34,8 +35,6 @@ install:
   - git --version
 
 script:
-  - swift build --clean # clean built artifacts if present
-  - swift package fetch # clones all dependencies
   - swift build # build project
   - swift test # run tests
 

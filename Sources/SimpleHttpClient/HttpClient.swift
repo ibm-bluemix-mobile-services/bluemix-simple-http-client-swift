@@ -18,7 +18,7 @@ import KituraNet
 /// An alias for a network request completion handler, receives back error, status, headers and data
 public typealias NetworkRequestCompletionHandler = (_ error:HttpError?, _ status:Int?, _ headers: [String:String]?, _ data:Data?) -> Void
 
-internal let NOOPNetworkRequestCompletionHandler:NetworkRequestCompletionHandler = {(a,b,c,d)->Void in}
+public let NOOPNetworkRequestCompletionHandler:NetworkRequestCompletionHandler = {(a,b,c,d)->Void in}
 
 /// Use HttpClient to make Http requests
 public class HttpClient{
