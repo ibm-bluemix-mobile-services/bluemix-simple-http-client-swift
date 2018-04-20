@@ -11,7 +11,7 @@ let package = Package(
     ],
     dependencies:[
         .package(url: "https://github.com/ibm-bluemix-mobile-services/bluemix-simple-logger-swift.git", .upToNextMinor(from: "0.5.0")),
-        .package(url: "https://github.com/IBM-Swift/Kitura-net.git", .upToNextMinor(from: "2.0.0")),
+        .package(url: "https://github.com/IBM-Swift/Kitura-net.git", from: "2.1.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target defines a module or a test suite.
