@@ -3,7 +3,7 @@ import Foundation
 @testable import SimpleHttpClient
 
 class HttpClientTests: XCTestCase {
-	private static let httpbinHost = "httpbin.mybluemix.net"
+	private static let httpbinHost = "httpbin.org"
 	private static let testString = "TestDataSimpleHttpClient"
 
 	let httpResource = HttpResource(schema: "http", host: httpbinHost, port: "80")

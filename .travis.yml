@@ -7,7 +7,7 @@ language: generic
 env:
   global:
   - SWIFT_VERSION=3.1.1
-  - SWIFT_VERSION=4.0.3
+  - SWIFT_VERSION=4.1
 
 notifications:
   email:
@@ -18,7 +18,7 @@ sudo: required
 
 dist: trusty
 
-osx_image: xcode9.2
+osx_image: xcode9.3
 
 before_install:
     - rvm install 2.4.0
