@@ -123,7 +123,7 @@ public class HttpClient{
     }
 }
 
-internal extension HttpClient {
+extension HttpClient {
 	
 	internal class func handleResponse(response: ClientResponse?, completionHandler: NetworkRequestCompletionHandler){
 		if let response = response {

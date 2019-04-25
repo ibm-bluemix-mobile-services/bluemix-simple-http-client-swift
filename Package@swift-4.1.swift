@@ -1,5 +1,4 @@
-// swift-tools-version:5.0
-
+// swift-tools-version:4.1
 import PackageDescription
 
 let package = Package(
@@ -9,8 +8,8 @@ let package = Package(
         .library(name: "SimpleHttpClient", targets: ["SimpleHttpClient"]),
     ],
     dependencies:[
-        .package(url: "https://github.com/ibm-bluemix-mobile-services/bluemix-simple-logger-swift.git", from: "0.5.0"),
-        .package(url: "https://github.com/IBM-Swift/Kitura-net.git", from: "2.0.0"),
+        .package(url: "https://github.com/ibm-bluemix-mobile-services/bluemix-simple-logger-swift.git", .upToNextMinor(from: "0.5.0")),
+        .package(url: "https://github.com/IBM-Swift/Kitura-net.git", .upToNextMinor(from: "2.0.0")),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target defines a module or a test suite.
