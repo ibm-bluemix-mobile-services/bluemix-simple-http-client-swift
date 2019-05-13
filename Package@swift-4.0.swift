@@ -10,7 +10,7 @@ let package = Package(
         .library(name: "SimpleHttpClient", targets: ["SimpleHttpClient"]),
     ],
     dependencies:[
-        .package(url: "https://github.com/ibm-bluemix-mobile-services/bluemix-simple-logger-swift.git", .upToNextMinor(from: "0.5.0")),
+        .package(url: "https://github.com/ibm-bluemix-mobile-services/bluemix-simple-logger-swift.git", from: "0.6.0"),
         .package(url: "https://github.com/IBM-Swift/Kitura-net.git", from: "2.1.0"),
     ],
     targets: [
